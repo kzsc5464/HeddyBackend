@@ -1,21 +1,46 @@
-pre-commit == 2.17.0
+pre-commit == 4.0.1
 
 # formatter
-isort == 5.10.1                 # imports
-black == 22.3.0                 # coding style
+isort == 5.13.2                 # imports
+black == 24.10.0                # coding style
 
 # linter
-pylint              == 2.12.2   # python static code analysis
-mypy                == 0.931    # type check
-flake8              == 3.8.4    # PyFlakes + pycodestyle + Ned Batchelder’s McCabe script
-flake8-docstrings   == 1.6.0    # pydocstyle tool to flake8
-flake8-annotations  == 2.7.0    # PEP 3107-style function annotations
-flake8-builtins     == 1.5.3    # check python builtins being used as variables or parameters
-flake8-bugbear      == 22.1.11  # find likely bugs and design problems
+pylint              == 3.3.1    # python static code analysis
+mypy                == 1.13.0   # type check
+flake8              == 7.1.1    # PyFlakes + pycodestyle + Ned Batchelder’s McCabe script
+flake8-docstrings   == 1.7.0    # pydocstyle tool to flake8
+flake8-annotations  == 3.1.1    # PEP 3107-style function annotations
+flake8-builtins     == 2.5.0    # check python builtins being used as variables or parameters
+flake8-bugbear      == 24.10.31 # find likely bugs and design problems
 
 # pytest for linting and unit test
-pytest          == 6.2.5
-pytest-pylint   == 0.18.0
-pytest-flake8   == 1.0.7
-pytest-mypy     == 0.8.0
-pytest-cov      == 3.0.0        # coverage reports
+pytest          == 8.3.3
+pytest-pylint   == 0.21.0
+pytest-flake8   == 1.2.2
+pytest-mypy     == 0.10.3
+pytest-cov      == 6.0.0        # coverage reports
+
+# WebframeWorker
+fastapi           == 0.115.4
+uvicorn           == 0.32.0
+pydantic_settings == 2.6.1
+email-validator   == 2.2.0
+python-multipart  == 0.0.17
+
+# Env 
+python-dotenv   == 1.0.1
+
+# Mongo DB
+motor           == 3.6.0 
+pymongo         == 4.9.2
+
+# SQL
+sqlalchemy      == 2.0.36
+
+
+# Security
+passlib[bcrypt]             == 1.7.4
+python-jose[cryptography]   == 3.3.0 
+bcrypt                      == 4.0.1
+passlib                     == 1.7.4
+
