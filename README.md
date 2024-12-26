@@ -49,7 +49,8 @@ Create a new user account.
     "email": "user@example.com",
     "username": "johndoe",
     "full_name": "John Doe",
-    "password": "secretpassword"
+    "password": "secretpassword",
+    "sns_type": "kakao"
 }
 ```
 
