@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from api.v1.endpoints import user
 from api.v1.endpoints import auth
+from api.v1.endpoints import pet
 
 # Main API Router
 api_router = APIRouter()
@@ -20,25 +21,18 @@ api_router.include_router(
 )
 
 # # Profile routes
-# api_router.include_router(
-#     profiles.router,
-#     prefix="/profiles",
-#     tags=["Profiles"]
-# )
+api_router.include_router(
+    pet.router,
+    prefix="/pet",
+    tags=["pet"]
+)
 
-# # Item routes
-# api_router.include_router(
-#     items.router,
-#     prefix="/items",
-#     tags=["Items"]
-# )
-
-# # Search routes
-# api_router.include_router(
-#     search.router,
-#     prefix="/search",
-#     tags=["Search"]
-# )
+# Email Auth
+api_router.include_router(
+    pet.router,
+    prefix="/email",
+    tags=["email"]
+)
 
 # Health check
 @api_router.get("/health", tags=["Health"])

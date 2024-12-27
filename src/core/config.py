@@ -1,9 +1,9 @@
 from pydantic_settings import BaseSettings
-from pydantic import Field, field_validator
 from functools import lru_cache
 from typing import Optional, Dict, Any, List
 import secrets
 from pathlib import Path
+
 
 class Settings(BaseSettings):
     # API Settings
@@ -11,9 +11,10 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Heddy Backend"
     DEBUG: bool = False
     VERSION: str = "1.0.0"
-    
     # CORS Settings
-    BACKEND_CORS_ORIGINS: str = "http://localhost:3000,http://localhost:8000,http://localhost:5173"
+    BACKEND_CORS_ORIGINS: str = "http://localhost:3000,\
+                                 http://localhost:8000,\
+                                 http://localhost:5173"
 
     # MongoDB
     MONGO_HOST: str = "localhost"
@@ -23,43 +24,42 @@ class Settings(BaseSettings):
     MONGO_PASSWORD: Optional[str] = None
     DATABASE_URL: Optional[str] = None
 
-    
     # JWT Token Settings
     SECRET_KEY: str = secrets.token_urlsafe(32)
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     ALGORITHM: str = "HS256"
-    
+
     # Email Settings (if needed)
     SMTP_TLS: bool = True
     SMTP_PORT: Optional[int] = 587
-    SMTP_HOST: Optional[str] = None
-    SMTP_USER: Optional[str] = None
-    SMTP_PASSWORD: Optional[str] = None
-    EMAILS_FROM_EMAIL: Optional[str] = None
-    EMAILS_FROM_NAME: Optional[str] = None
-    
+    # SMTP_PORT: Optional[int] = 465
+    SMTP_HOST: Optional[str] = "smtp.gmail.com"
+    SMTP_USER: Optional[str] = "kzsc5464@gmail.com"
+    SMTP_PASSWORD: Optional[str] = "jayjvoqotaocyowp"
+    EMAILS_FROM_EMAIL: Optional[str] = "kzsc5464@gmail.com"
+    EMAILS_FROM_NAME: Optional[str] = "Heddy"
+
     # Cache Settings
     REDIS_HOST: Optional[str] = "localhost"
     REDIS_PORT: Optional[int] = 6379
     REDIS_PASSWORD: Optional[str] = None
-    
+
     # File Storage
     UPLOAD_DIR: Path = Path("uploads")
     MAX_UPLOAD_SIZE: int = 5_242_880  # 5MB in bytes
     ALLOWED_FILE_TYPES: list[str] = ["image/jpeg", "image/png", "application/pdf"]
-    
+
     # Logging
     LOG_LEVEL: str = "INFO"
     LOG_FILE: str = "logs/app.log"
-    
+
     class Config:
         env_file = ".env"
         case_sensitive = True
 
     def __init__(self, **kwargs: Any):
         super().__init__(**kwargs)
-        
         # Construct Database URL if not provided
         if not self.DATABASE_URL:
             # MongoDB 인증이 필요한 경우
@@ -93,12 +93,14 @@ class Settings(BaseSettings):
             "redoc_url": "/redoc",
         }
 
+
 @lru_cache()
 def get_settings() -> Settings:
     """
     Create cached instance of settings
     """
     return Settings()
+
 
 # Create a settings instance
 settings = get_settings()

@@ -6,7 +6,9 @@ from datetime import datetime
 class UserBase(BaseModel):
     email: EmailStr
     username: Annotated[str, Field(min_length=3, max_length=50)]
-    full_name: Optional[str] = None
+    birth_date: Optional[str] = None
+    sns_type: Optional[str] = None
+    cell_number: Optional[str] = None
     is_active: Optional[bool] = True
 
 # Properties to receive via API on creation
@@ -17,9 +19,11 @@ class UserCreate(UserBase):
         json_schema_extra = {
             "example": {
                 "email": "user@example.com",
+                "password": "secretpassword",
                 "username": "johndoe",
-                "full_name": "John Doe",
-                "password": "secretpassword"
+                "cell_number": "01083848496",
+                "birth_date": "1990-01-01",
+                "sns_type": "kakao"
             }
         }
 
