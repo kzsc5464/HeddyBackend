@@ -7,6 +7,7 @@ from pydantic_core import CoreSchema
 from pydantic.json_schema import GetJsonSchemaHandler
 from bson import ObjectId
 
+
 class PyObjectId(ObjectId):
     @classmethod
     def __get_validators__(cls):
@@ -75,7 +76,9 @@ class PetHealthCollection:
     ) -> List[PetHealth]:
         collection = db[cls.name]
         query = {"pet_id": ObjectId(pet_id)}
-        
+
+        print(start_date)
+
         if start_date or end_date:
             query["recorded_at"] = {}
             if start_date:
@@ -90,15 +93,21 @@ class PetHealthCollection:
         return records
 
     @classmethod
-    async def get_daily_summary(cls, db, pet_id: str, date: datetime) -> dict:
+    async def get_daily_heart_rate(
+                cls,
+                db,
+                pet_id: str,
+                startdate: datetime,
+                enddate: datetime
+        ) -> dict:
         collection = db[cls.name]
-        start_date = datetime(date.year, date.month, date.day)
-        end_date = datetime(date.year, date.month, date.day, 23, 59, 59)
+        start_date = datetime(startdate.year, startdate.month, startdate.day)
+        end_date = datetime(enddate.year, enddate.month, enddate.day, 23, 59, 59)
 
         pipeline = [
             {
                 "$match": {
-                    "pet_id": ObjectId(pet_id),
+                    "pet_id": pet_id,
                     "recorded_at": {
                         "$gte": start_date,
                         "$lte": end_date
@@ -106,18 +115,114 @@ class PetHealthCollection:
                 }
             },
             {
+                "$sort": {"heart_rate": -1}  # 심박수 내림차순
+            },
+            {
                 "$group": {
                     "_id": None,
                     "avg_heart_rate": {"$avg": "$heart_rate"},
-                    "total_steps": {"$sum": "$steps"},
-                    "total_calories": {"$sum": "$calories"},
+                    "max_heart_rate": {"$max": "$heart_rate"},
+                    "max_heart_rate_time": {"$first": "$recorded_at"},
+                    "min_heart_rate": {"$min": "$heart_rate"},
+                    "min_heart_rate_time": {"$last": "$recorded_at"},
                     "total_distance": {"$sum": "$distance"},
-                    "records_count": {"$sum": 1}
                 }
             }
         ]
 
         results = await collection.aggregate(pipeline).to_list(length=1)
+
+        print(results)
+
+        if not results:
+            return None
+        return results[0]
+
+    @classmethod
+    async def get_daily_calories(
+                cls,
+                db,
+                pet_id: str,
+                startdate: datetime,
+                enddate: datetime
+        ) -> dict:
+        collection = db[cls.name]
+        start_date = datetime(startdate.year, startdate.month, startdate.day)
+        end_date = datetime(enddate.year, enddate.month, enddate.day, 23, 59, 59)
+
+        pipeline = [
+            {
+                "$match": {
+                    "pet_id": pet_id,
+                    "recorded_at": {
+                        "$gte": start_date,
+                        "$lte": end_date
+                    }
+                }
+            },
+            {
+                "$sort": {"calories": -1}  # 심박수 내림차순
+            },
+            {
+                "$group": {
+                    "_id": None,
+                    "max_heart_rate": {"$max": "$calories"},
+                    "max_heart_$calories": {"$first": "$recorded_at"},
+                    "min_$calories": {"$min": "$heart_rate"},
+                    "min_heart_$calories": {"$last": "$recorded_at"},
+                    "total_steps": {"$sum": "$steps"},
+                    "total_distance": {"$sum": "$distance"},
+                }
+            }
+        ]
+
+        results = await collection.aggregate(pipeline).to_list(length=1)
+
+        print(results)
+
+        if not results:
+            return None
+        return results[0]
+
+    @classmethod
+    async def get_daily_steps(
+                cls,
+                db,
+                pet_id: str,
+                startdate: datetime,
+                enddate: datetime
+        ) -> dict:
+        collection = db[cls.name]
+        start_date = datetime(startdate.year, startdate.month, startdate.day)
+        end_date = datetime(enddate.year, enddate.month, enddate.day, 23, 59, 59)
+
+        pipeline = [
+            {
+                "$match": {
+                    "pet_id": pet_id,
+                    "recorded_at": {
+                        "$gte": start_date,
+                        "$lte": end_date
+                    }
+                }
+            },
+            {
+                "$sort": {"steps": -1}  # 심박수 내림차순
+            },
+            {
+                "$group": {
+                    "_id": None,
+                    "max_heart_$calories": {"$first": "$recorded_at"},
+                    "max_steps": {"$sum": "$steps"},
+                    "min_steps": {"$sum": "$distance"},
+                }
+            }
+        ]
+
+        results = await collection.aggregate(pipeline).to_list(length=1)
+
+        print(results)
+
         if not results:
             return None
         return results[0]

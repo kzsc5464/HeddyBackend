@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import LoginForm from './components/auth/LoginForm';
 import RegisterForm from './components/auth/RegisterForm';
 import PetRegisterForm from './components/pets/RegisterPetForm';
+import PetHealthChart from "./components/pets/PetHealthChart";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentView, setCurrentView] = useState('login'); // 'login', 'register', 'petRegister'
+  const [currentView, setCurrentView] = useState('login'); // 'login', 'register', 'petRegister', 'PetHealthChart'
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -15,6 +16,8 @@ export default function App() {
 
   const renderForm = () => {
     switch (currentView) {
+      case 'PetHealthChart':
+        return <PetHealthChart onSuccess={() => setIsLoggedIn(true) } />;
       case 'login':
         return <LoginForm onSuccess={() => setIsLoggedIn(true)} />;
       case 'register':
@@ -50,36 +53,46 @@ export default function App() {
         {/* Form Selection Buttons */}
         <div className="flex justify-center space-x-4 mb-8">
           <button
-            onClick={() => setCurrentView('login')}
-            className={`px-4 py-2 rounded transition-colors duration-200 ${
-              currentView === 'login' 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-200 hover:bg-gray-300'
-            }`}
+              onClick={() => setCurrentView('login')}
+              className={`px-4 py-2 rounded transition-colors duration-200 ${
+                  currentView === 'login'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-200 hover:bg-gray-300'
+              }`}
           >
             Login
           </button>
           <button
-            onClick={() => setCurrentView('register')}
-            className={`px-4 py-2 rounded transition-colors duration-200 ${
-              currentView === 'register' 
-                ? 'bg-green-600 text-white' 
-                : 'bg-gray-200 hover:bg-gray-300'
-            }`}
+              onClick={() => setCurrentView('register')}
+              className={`px-4 py-2 rounded transition-colors duration-200 ${
+                  currentView === 'register'
+                      ? 'bg-green-600 text-white'
+                      : 'bg-gray-200 hover:bg-gray-300'
+              }`}
           >
             Register
           </button>
-          {isLoggedIn && (
-            <button
-              onClick={() => setCurrentView('petRegister')}
+          <button
+              onClick={() => setCurrentView('PetHealthChart')}
               className={`px-4 py-2 rounded transition-colors duration-200 ${
-                currentView === 'petRegister' 
-                  ? 'bg-purple-600 text-white' 
-                  : 'bg-gray-200 hover:bg-gray-300'
+                  currentView === 'PetHealthChart'
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-gray-200 hover:bg-gray-300'
               }`}
-            >
-              Pet Register
-            </button>
+          >
+            PetHealthChart
+          </button>
+          {isLoggedIn && (
+              <button
+                  onClick={() => setCurrentView('petRegister')}
+                  className={`px-4 py-2 rounded transition-colors duration-200 ${
+                      currentView === 'petRegister'
+                          ? 'bg-purple-600 text-white'
+                          : 'bg-gray-200 hover:bg-gray-300'
+                  }`}
+              >
+                Pet Register
+              </button>
           )}
         </div>
 

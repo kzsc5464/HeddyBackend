@@ -21,17 +21,17 @@ app.add_middleware(
 app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
 
-# @app.on_event("startup")
-# async def startup_db_client():
-#     """Database connection on startup."""
-#     await MongoDB.connect_to_database()
-#
-#
-# @app.on_event("shutdown")
-# async def shutdown_db_client():
-#     """Database disconnection on shutdown."""
-#     await MongoDB.close_database_connection()
-#
+@app.on_event("startup")
+async def startup_db_client():
+    """Database connection on startup."""
+    await MongoDB.connect_to_database()
+
+
+@app.on_event("shutdown")
+async def shutdown_db_client():
+    """Database disconnection on shutdown."""
+    await MongoDB.close_database_connection()
+
 
 @app.get("/")
 async def root():

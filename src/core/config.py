@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Tuple
 import secrets
 from pathlib import Path
 
@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     # File Storage
     UPLOAD_DIR: Path = Path("uploads")
     MAX_UPLOAD_SIZE: int = 5_242_880  # 5MB in bytes
-    ALLOWED_FILE_TYPES: list[str] = ["image/jpeg", "image/png", "application/pdf"]
+    ALLOWED_FILE_TYPES: Tuple[str, ...] = ("image/jpeg", "image/png", "application/pdf")
 
     # Logging
     LOG_LEVEL: str = "INFO"
