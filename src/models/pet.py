@@ -131,7 +131,7 @@ class PetCollection:
         skip: int = 0,
         limit: int = 100,
         search: Optional[str] = None,
-        pet_type: Optional[PetType] = None
+        email: Optional[PetType] = None
     ) -> list[Pet]:
         """List pets with optional search and filter"""
         collection = db[cls.name]
@@ -144,8 +144,8 @@ class PetCollection:
                 {"breed": {"$regex": search, "$options": "i"}}
             ]
         
-        if pet_type:
-            query["pet_type"] = pet_type
+        if email:
+            query["email"] = email
         
         cursor = collection.find(query).skip(skip).limit(limit).sort("created_at", -1)
         pets = []

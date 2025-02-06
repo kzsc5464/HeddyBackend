@@ -76,5 +76,4 @@ class AuthCollection:
         collection = db[cls.name]
         auth_code["created_at"] = datetime.utcnow()
         result = await collection.insert_one(auth_code)
-        auth_code = await collection.find_one({"_id": result.inserted_id})
-        return auth_code(**auth_code)
+        return result

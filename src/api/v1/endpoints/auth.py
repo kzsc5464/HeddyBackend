@@ -5,11 +5,12 @@ from datetime import timedelta
 
 from core.config import settings
 from core.database import get_database
-from core.security import verify_password, create_access_token, get_current_user
+from core.security import verify_password, create_access_token, get_current_user, get_password_hash
 from models.user import UserCollection
 from models.auth_code import AuthCollection
 from schemas.user import Token
 from core.security import verify_auth_code
+from utils.email_auth import email
 
 router = APIRouter()
 
@@ -64,6 +65,21 @@ async def login(
     }
 
 
+@router.post("/password-reset/auth")
+async def request_password_reset_auth(
+    to_email: str,
+    db: AsyncIOMotorDatabase = Depends(get_database)
+    ):
+    try:
+        auth_code = email(to_email)
+        auth_data = {}
+        auth_data["auth_code"] = auth_code
+        auth_data["email"] = to_email
+        await AuthCollection.create(db, auth_data)
+    except Exception as e:
+        raise e
+    return {"status": "success"}
+
 @router.post("/password-reset")
 async def request_password_reset(
         email: str,
@@ -74,26 +90,7 @@ async def request_password_reset(
     if not auth_code:
         raise HTTPException(status_code=404, detail="auth code not found")
 
-    return {"detail": "Password reset instructions have been sent to your email."}
-
-
-@router.post("/password-reset/{token}")
-async def reset_password(
-        token: str,
-        new_password: str,
-        db: AsyncIOMotorDatabase = Depends(get_database)
-):
-    user_id = verify_password_reset_token(token)
-    if not user_id:
-        raise HTTPException(status_code=400, detail="Invalid or expired password reset token.")
-
-    user = await UserCollection.get_by_id(db, user_id)
-    user_dict = user.dict()
-    user_dict["hashed_password"] = get_password_hash(new_password)
-    await UserCollection.update(db, user_id, user_dict)
-
-    return {"detail": "Password has been reset successfully."}
-
+    return {"status": "success"}
 
 @router.post("/update-password")
 async def update_password(
@@ -107,7 +104,7 @@ async def update_password(
         raise HTTPException(status_code=400, detail="Invalid authentication code")
 
     # 비밀번호 변경
-    user = await UserCollection.get_by_id(db, ObjectId(user_id))
+    user = await UserCollection.get_by_id(db, user_id)
     user_dict = user.dict()
     user_dict["hashed_password"] = get_password_hash(new_password)
     await UserCollection.update(db, user_id, user_dict)

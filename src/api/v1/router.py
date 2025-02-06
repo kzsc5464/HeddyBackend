@@ -63,11 +63,11 @@ api_router.include_router(
     tags=["distance"]
 )
 
-api_router.include_router(
-    steps.router,
-    prefix="/steps",
-    tags=["steps"]
-)
+# api_router.include_router(
+#     steps.router,
+#     prefix="/steps",
+#     tags=["steps"]
+# )
 
 # Health check
 @api_router.get("/health", tags=["Health"])

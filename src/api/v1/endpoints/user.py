@@ -21,7 +21,7 @@ async def create_user(
     user_dict = user_data.dict()
     user_dict["hashed_password"] = get_password_hash(user_data.password)
     user = await UserCollection.create(db, user_dict)
-    return user
+    return {"status": "success"}
 
 @router.get("/{user_id}")
 async def get_user(

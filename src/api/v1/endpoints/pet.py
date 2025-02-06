@@ -16,7 +16,7 @@ async def create_pet(
     try:
         pet_dict = pet_data.model_dump()
         pet = await PetCollection.create(db, pet_dict)
-        return {"status": "success", "data": pet}
+        return {"status": "success"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -31,12 +31,12 @@ async def get_pet(
         raise HTTPException(status_code=404, detail="Pet not found")
     return {"status": "success", "data": pet}
 
-@router.get("/", response_model=dict)
+@router.get("/list", response_model=dict)
 async def list_pets(
     skip: int = Query(default=0, ge=0),
     limit: int = Query(default=10, ge=1, le=100),
     search: Optional[str] = None,
-    pet_type: Optional[PetType] = None,
+    email: Optional[PetType] = None,
     db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     """반려동물 목록을 조회합니다. 검색과 필터링이 가능합니다."""
@@ -45,7 +45,7 @@ async def list_pets(
         skip=skip,
         limit=limit,
         search=search,
-        pet_type=pet_type
+        email=email
     )
     return {
         "status": "success",
@@ -54,7 +54,7 @@ async def list_pets(
             "skip": skip,
             "limit": limit,
             "search": search,
-            "pet_type": pet_type
+            "email": email
         }
     }
 

@@ -13,6 +13,7 @@ class PetBase(BaseModel):
     weight: Optional[float] = Field(None, ge=0, description="반려동물의 체중 (kg)")
     body_type: Optional[str] = Field(None, description="반려동물의 체형")
     birth_date: Optional[datetime] = Field(None, description="반려동물의 생년월일")
+    email: str = Field(..., description="반려동물 주인 아이디")
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -23,7 +24,8 @@ class PetBase(BaseModel):
                 "breed": "골든리트리버",
                 "weight": 25.5,
                 "body_type": "대형",
-                "birth_date": "2023-01-01T00:00:00"
+                "birth_date": "2023-01-01T00:00:00",
+                "email": "<EMAIL>",
             }
         }
     )
